@@ -1,17 +1,54 @@
 # Aparna Sarees
 
-A modern and elegant saree-themed web project built with Next.js, designed to look polished and ready for presentation.
+![Aparna Sarees preview](public/a_high_quality_professional_8k_photography_of_an_elegant_indian_woman_wearing_a.png)
 
-![Aparna Sarees animated preview](public/animated-hero.svg)
+Aparna Sarees is a modern and elegant saree-themed web project built with Next.js. It is designed to showcase a polished online fashion experience with a beautiful UI, smooth presentation, and a strong foundation for future product pages, cart flow, and user interaction.
 
-## ✨ What this project includes
+## 📌 Project Name
 
-- Responsive landing experience
-- Clean and modern UI styling
-- Ready structure for future product and shop pages
-- Smooth, visually appealing presentation for demo purposes
+Aparna Sarees – Elegant Online Saree Experience
 
-## 🚀 Run locally
+## 🎯 Purpose
+
+This project aims to present a stylish and professional saree-focused website that highlights beauty, tradition, and modern web design. It is suitable for academic submission, personal portfolio display, and future extension into a full e-commerce platform.
+
+## ✨ Key Features
+
+- Modern and responsive landing page
+- Elegant saree-themed UI design
+- Clean, polished presentation for demos and review
+- Ready structure for future product listing and shopping experience
+- Smooth visual design with animated preview support
+
+## 🧰 Technologies Used
+
+### Frontend
+
+- Next.js
+- React
+- Tailwind CSS
+- TypeScript
+
+### Backend / Services
+
+- Node.js (for future API integration)
+- MongoDB (can be connected for product data)
+- REST / Express-style backend support (future-ready)
+
+## 🚀 Live Link
+
+Live Demo: Local development server only
+
+## ⚙️ Environment Variables
+
+If you plan to connect backend services later, you can add variables like:
+
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:5000
+MONGODB_URL=your_mongodb_connection_string
+```
+
+## ▶️ Run Locally
 
 ```bash
 cd aparna-sarees-client
@@ -21,13 +58,6 @@ npm run dev
 
 Then open http://localhost:3000 in your browser.
 
-## 🛠 Tech stack
+## 📂 Project Status
 
-- Next.js 16
-- React 19
-- Tailwind CSS 4
-- TypeScript
-
-## 📌 Status
-
-The project is set up and ready for further development and showcase.
+The core interface and project structure are ready, polished, and suitable for presentation, review, and further development.
