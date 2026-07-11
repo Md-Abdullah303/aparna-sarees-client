@@ -1,26 +1,77 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+:root,
+[data-theme="dark"] {
+  --color-primary: #c5a059;
+  --color-primary-foreground: #1a1209;
+  --color-secondary: #8b6b3d;
+  --color-accent: #2a1f14;
+  --color-background: #120c08;
+  --color-surface: #1a1209;
+  --color-hero-bg: #140e0a;
+  --color-text: #f5f0e8;
+  --color-text-muted: #c9bfb0;
+}
+
+[data-theme="light"] {
+  --color-primary: #a67c2e;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #6b4f2a;
+  --color-accent: #f3ebe0;
+  --color-background: #faf7f2;
+  --color-surface: #f0e8dc;
+  --color-hero-bg: #f5efe6;
+  --color-text: #1a1209;
+  --color-text-muted: #5c4a38;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-text);
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-playfair);
+  --font-hero: var(--font-cormorant);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-playfair), Georgia, serif;
+}
+
+.font-hero {
+  font-family: var(--font-cormorant), "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.hero-bullet {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.hero-bullet-active {
+  width: 28px;
+  background: var(--color-primary);
+}
+
+[data-theme="light"] .hero-bullet {
+  background: rgba(26, 18, 9, 0.25);
+}
+
+[data-theme="light"] .hero-bullet-active {
+  background: var(--color-primary);
 }
