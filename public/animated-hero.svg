@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" role="img" aria-label="Aparna Sarees animated project preview">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#7c3aed" />
+      <stop offset="100%" stop-color="#ec4899" />
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef3c7" />
+      <stop offset="100%" stop-color="#f472b6" />
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="1200" height="420" rx="28" fill="url(#bg)" />
+  <circle cx="270" cy="180" r="150" fill="#ffffff" fill-opacity="0.08">
+    <animate attributeName="r" values="140;165;140" dur="4s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="270" cy="180" r="120" stroke="url(#shine)" stroke-width="4" stroke-dasharray="10 8" fill="none" filter="url(#glow)">
+    <animateTransform attributeName="transform" type="rotate" from="0 270 180" to="360 270 180" dur="10s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="270" cy="180" r="18" fill="#fef3c7" filter="url(#glow)">
+    <animate attributeName="opacity" values="0.8;1;0.8" dur="2.5s" repeatCount="indefinite" />
+  </circle>
+
+  <path d="M820 120 C900 80 980 80 1060 140 S1180 220 1160 260" fill="none" stroke="#ffffff" stroke-opacity="0.45" stroke-width="3" stroke-linecap="round">
+    <animate attributeName="d" values="M820 120 C900 80 980 80 1060 140 S1180 220 1160 260;M820 140 C900 100 980 100 1060 180 S1180 260 1160 300;M820 120 C900 80 980 80 1060 140 S1180 220 1160 260" dur="4s" repeatCount="indefinite" />
+  </path>
+  <rect x="780" y="180" width="200" height="70" rx="20" fill="#ffffff" fill-opacity="0.12">
+    <animate attributeName="y" values="180;205;180" dur="3s" repeatCount="indefinite" />
+  </rect>
+  <rect x="810" y="198" width="70" height="8" rx="4" fill="#fef3c7" fill-opacity="0.95" />
+  <rect x="810" y="214" width="110" height="8" rx="4" fill="#ffffff" fill-opacity="0.7" />
+
+  <text x="130" y="175" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="700" fill="#ffffff" letter-spacing="1">
+    Aparna
+  </text>
+  <text x="130" y="250" font-family="Segoe UI, Arial, sans-serif" font-size="62" font-weight="700" fill="#fef3c7" letter-spacing="1">
+    Sarees
+  </text>
+  <text x="130" y="315" font-family="Segoe UI, Arial, sans-serif" font-size="28" font-weight="600" fill="#fdf2f8" letter-spacing="2">
+    Project Ready ✨
+  </text>
+</svg>
