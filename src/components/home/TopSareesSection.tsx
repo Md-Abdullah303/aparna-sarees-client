@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { formatBdt, TOP_SAREES } from "@/lib/mock-data";
 import { SectionHeading } from "./SectionHeading";
+import { motion } from "framer-motion";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -26,9 +29,24 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
 export function TopSareesSection() {
   return (
-    <section className="bg-[var(--color-background)] px-6 py-20 sm:px-10">
+    <section className="bg-[var(--color-background)] px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Featured Collection"
@@ -36,9 +54,16 @@ export function TopSareesSection() {
           description="Handpicked bestsellers loved by our customers — exquisite weaves for weddings, festivals, and everyday elegance."
         />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+        >
           {TOP_SAREES.map((saree) => (
-            <article
+            <motion.article
+              variants={item}
               key={saree.id}
               className="group overflow-hidden rounded-2xl border border-white/10 bg-[var(--color-surface)] shadow-lg shadow-black/10 transition-transform hover:-translate-y-1"
             >
@@ -84,18 +109,24 @@ export function TopSareesSection() {
                   Show Details
                 </Link>
               </div>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mt-10 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.2, duration: 0.5 }}
+          className="mt-10 text-center"
+        >
           <Link
             href="/browse-sarees"
             className="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-8 py-3 text-sm font-semibold text-[var(--color-primary-foreground)] transition-transform hover:scale-[1.02]"
           >
             View All Sarees
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

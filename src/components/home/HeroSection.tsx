@@ -7,6 +7,7 @@ import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import { HERO_SLIDES } from "@/lib/hero-slides";
+import { motion } from "framer-motion";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -16,7 +17,7 @@ export function HeroSection() {
   const swiperRef = useRef<SwiperType | null>(null);
 
   return (
-    <section className="relative min-h-[calc(100vh-6rem)] overflow-hidden bg-[var(--color-hero-bg)] pt-28 pb-16 sm:pt-32">
+    <section className="relative min-h-[calc(100vh-5rem)] overflow-hidden bg-[var(--color-hero-bg)] pt-24 pb-12 sm:pt-32 sm:pb-16">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(197,160,89,0.12),transparent_55%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(90,55,30,0.35),transparent_60%)]" />
 
@@ -39,55 +40,67 @@ export function HeroSection() {
       >
         {HERO_SLIDES.map((slide) => (
           <SwiperSlide key={slide.image}>
-            <div className="mx-auto grid max-w-7xl items-center gap-10 px-6 sm:px-10 lg:grid-cols-2 lg:gap-16">
-              <div className="z-10 flex flex-col gap-8">
-                <div>
-                  <p className="mb-4 text-sm font-medium uppercase tracking-[0.25em] text-[var(--color-primary)]">
-                    Aparna Sarees
-                  </p>
-                  <h1 className="max-w-xl">
-                    <span className="font-hero block text-4xl leading-[1.1] text-[var(--color-text)] sm:text-5xl lg:text-[3.5rem]">
-                      {slide.title}
-                    </span>
-                    <span className="font-hero mt-1 block text-4xl italic leading-[1.1] text-[var(--color-primary)] sm:text-5xl lg:text-[3.75rem]">
-                      {slide.accent}
-                    </span>
-                  </h1>
-                  <p className="mt-6 max-w-md text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
-                    {slide.subtitle}
-                  </p>
-                </div>
+            {({ isActive }) => (
+              <div className="mx-auto grid max-w-7xl items-center gap-10 px-4 sm:px-6 lg:px-10 lg:grid-cols-2 lg:gap-16">
+                <motion.div
+                  initial={{ opacity: 0, x: -30 }}
+                  animate={isActive ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+                  className="z-10 flex flex-col gap-6 sm:gap-8 mt-4 sm:mt-0"
+                >
+                  <div>
+                    <p className="mb-3 sm:mb-4 text-xs sm:text-sm font-medium uppercase tracking-[0.25em] text-[var(--color-primary)]">
+                      Aparna Sarees
+                    </p>
+                    <h1 className="max-w-xl">
+                      <span className="font-hero block text-4xl leading-[1.1] text-[var(--color-text)] sm:text-5xl lg:text-[3.5rem]">
+                        {slide.title}
+                      </span>
+                      <span className="font-hero mt-1 block text-4xl italic leading-[1.1] text-[var(--color-primary)] sm:text-5xl lg:text-[3.75rem]">
+                        {slide.accent}
+                      </span>
+                    </h1>
+                    <p className="mt-4 sm:mt-6 max-w-md text-sm sm:text-base leading-relaxed text-[var(--color-text-muted)] sm:text-lg">
+                      {slide.subtitle}
+                    </p>
+                  </div>
 
-                <div className="flex flex-wrap gap-4">
-                  <Link
-                    href="/browse-sarees"
-                    className="inline-flex items-center justify-center rounded-full bg-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-[var(--color-primary-foreground)] shadow-lg shadow-[var(--color-primary)]/25 transition-transform hover:scale-[1.02] hover:brightness-110"
-                  >
-                    Shop Now
-                  </Link>
-                  <Link
-                    href="/browse-sarees"
-                    className="inline-flex items-center justify-center rounded-full border border-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary)]/10"
-                  >
-                    View Collection
-                  </Link>
-                </div>
-              </div>
+                  <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+                    <Link
+                      href="/browse-sarees"
+                      className="inline-flex w-full sm:w-auto items-center justify-center rounded-full bg-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-[var(--color-primary-foreground)] shadow-lg shadow-[var(--color-primary)]/25 transition-transform hover:scale-[1.02] hover:brightness-110"
+                    >
+                      Shop Now
+                    </Link>
+                    <Link
+                      href="/browse-sarees"
+                      className="inline-flex w-full sm:w-auto items-center justify-center rounded-full border border-[var(--color-primary)] px-8 py-3.5 text-sm font-semibold text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary)]/10"
+                    >
+                      View Collection
+                    </Link>
+                  </div>
+                </motion.div>
 
-              <div className="relative mx-auto aspect-[4/5] w-full max-w-md lg:max-w-lg xl:max-w-xl">
-                <div className="absolute -inset-4 rounded-[2rem] bg-[var(--color-primary)]/10 blur-2xl" />
-                <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] border border-white/10 shadow-2xl shadow-black/40">
-                  <Image
-                    src={slide.image}
-                    alt={`${slide.title} ${slide.accent}`}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 50vw"
-                    className="object-cover object-top"
-                  />
-                </div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={isActive ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
+                  className="relative mx-auto aspect-[4/5] w-full max-w-[16rem] sm:max-w-md lg:max-w-lg xl:max-w-xl pb-10 sm:pb-0"
+                >
+                  <div className="absolute -inset-4 rounded-[2rem] bg-[var(--color-primary)]/10 blur-2xl" />
+                  <div className="relative h-full w-full overflow-hidden rounded-[1.75rem] border border-white/10 shadow-2xl shadow-black/40">
+                    <Image
+                      src={slide.image}
+                      alt={`${slide.title} ${slide.accent}`}
+                      fill
+                      priority
+                      sizes="(max-width: 1024px) 100vw, 50vw"
+                      className="object-cover object-top"
+                    />
+                  </div>
+                </motion.div>
               </div>
-            </div>
+            )}
           </SwiperSlide>
         ))}
       </Swiper>
@@ -128,7 +141,7 @@ export function HeroSection() {
         </svg>
       </button>
 
-      <div className="hero-pagination absolute bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2" />
+      <div className="hero-pagination absolute bottom-4 sm:bottom-8 left-1/2 z-20 flex -translate-x-1/2 items-center gap-2" />
     </section>
   );
 }

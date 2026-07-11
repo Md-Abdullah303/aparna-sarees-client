@@ -1,10 +1,28 @@
+"use client";
+
 import Link from "next/link";
 import { TOP_SELLERS } from "@/lib/mock-data";
 import { SectionHeading } from "./SectionHeading";
+import { motion } from "framer-motion";
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const item = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
 
 export function TopSellersSection() {
   return (
-    <section className="border-t border-white/10 bg-[var(--color-surface)] px-6 py-20 sm:px-10">
+    <section className="border-t border-white/10 bg-[var(--color-surface)] px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
       <div className="mx-auto max-w-7xl">
         <SectionHeading
           eyebrow="Trusted Artisans"
@@ -12,9 +30,16 @@ export function TopSellersSection() {
           description="Meet our highest-rated sellers — passionate curators of fine sarees with exceptional craftsmanship."
         />
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div
+          variants={container}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+        >
           {TOP_SELLERS.map((seller, index) => (
-            <article
+            <motion.article
+              variants={item}
               key={seller.id}
               className="relative overflow-hidden rounded-2xl border border-white/10 bg-[var(--color-background)] p-6 shadow-lg shadow-black/10 transition-transform hover:-translate-y-1"
             >
@@ -63,9 +88,9 @@ export function TopSellersSection() {
               >
                 View Shop
               </Link>
-            </article>
+            </motion.article>
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
