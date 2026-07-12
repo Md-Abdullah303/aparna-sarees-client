@@ -72,6 +72,19 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* About Page Theme Additions */
+  --color-gold: #D4AF37;
+  --color-cream: #FFFDD0;
+  --color-maroon: #800000;
+  --color-surface-container-high: #eae7e7;
+  --color-on-surface-variant: #5a413d;
+  --color-surface: #fcf9f8;
+  --color-surface-container-low: #f6f3f2;
+  --color-secondary-fixed: #ffe088;
+  
+  --font-ebGaramond: "EB Garamond", serif;
+  --font-plusJakartaSans: "Plus Jakarta Sans", sans-serif;
 }
 
 html {
