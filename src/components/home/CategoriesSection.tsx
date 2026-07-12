@@ -5,10 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const categories = [
-  { name: "Silk Sarees", img: "https://images.unsplash.com/photo-1610030469983-98e550d615ef?q=80&w=400&auto=format&fit=crop" },
-  { name: "Jamdani", img: "https://images.unsplash.com/photo-1610030469614-740b20cb3a0c?q=80&w=400&auto=format&fit=crop" },
-  { name: "Cotton", img: "https://images.unsplash.com/photo-1583391733958-d25e07fac661?q=80&w=400&auto=format&fit=crop" },
-  { name: "Georgette", img: "https://images.unsplash.com/photo-1605792657360-d5845cb447cb?q=80&w=400&auto=format&fit=crop" },
+  { name: "Silk Sarees", img: "https://images.unsplash.com/photo-1679006831648-7c9ea12e5807?q=80&w=400&auto=format&fit=crop" },
+  { name: "Jamdani", img: "https://images.unsplash.com/photo-1727430228383-aa1fb59db8bf?q=80&w=400&auto=format&fit=crop" },
+  { name: "Cotton", img: "https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=400&auto=format&fit=crop" },
+  { name: "Georgette", img: "https://images.unsplash.com/flagged/photo-1551854716-8b811be39e7e?q=80&w=400&auto=format&fit=crop" },
 ];
 
 export function CategoriesSection() {
