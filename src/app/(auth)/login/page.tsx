@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -25,10 +26,12 @@ export default function LoginPage() {
       },
       {
         onSuccess: () => {
+          toast.success("Login successful!");
           router.push("/dashboard");
         },
         onError: (ctx) => {
           setError(ctx.error.message || "Invalid credentials");
+          toast.error(ctx.error.message || "Invalid credentials");
           setLoading(false);
         },
       }

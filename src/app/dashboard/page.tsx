@@ -4,6 +4,7 @@ import { useSession } from "@/lib/auth-client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 const API = "/api/server";
 
@@ -124,6 +125,7 @@ export default function DashboardPage() {
     e.preventDefault();
     if (!form.name.trim() || !form.price) {
       setFormError("Name and price are required.");
+      toast.error("Name and price are required.");
       return;
     }
 
@@ -161,16 +163,19 @@ export default function DashboardPage() {
       const data = await res.json();
       if (!res.ok) {
         setFormError(data.message || "Something went wrong.");
+        toast.error(data.message || "Something went wrong.");
         return;
       }
 
       // Refresh list
+      toast.success(editingId ? "Saree updated successfully!" : "Saree added successfully!");
       await fetchMySarees();
       setForm(EMPTY_FORM);
       setEditingId(null);
       setActiveTab("manage");
     } catch (err) {
       setFormError("Network error. Is the server running?");
+      toast.error("Network error. Is the server running?");
     } finally {
       setSubmitting(false);
     }
@@ -206,8 +211,10 @@ export default function DashboardPage() {
       });
       setSarees((prev) => prev.filter((s) => s._id !== id));
       setDeleteConfirmId(null);
+      toast.success("Saree deleted successfully!");
     } catch {
       alert("Delete failed. Is the server running?");
+      toast.error("Delete failed. Is the server running?");
     }
   };
 

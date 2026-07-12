@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -21,21 +22,25 @@ export default function RegisterPage() {
 
     if (password.length < 8) {
       setError("Password must be at least 8 characters long.");
+      toast.error("Password must be at least 8 characters long.");
       setLoading(false);
       return;
     }
     if (!/[A-Z]/.test(password)) {
       setError("Password must contain at least one uppercase letter.");
+      toast.error("Password must contain at least one uppercase letter.");
       setLoading(false);
       return;
     }
     if (!/[a-z]/.test(password)) {
       setError("Password must contain at least one lowercase letter.");
+      toast.error("Password must contain at least one lowercase letter.");
       setLoading(false);
       return;
     }
     if (!/[0-9]/.test(password)) {
       setError("Password must contain at least one number.");
+      toast.error("Password must contain at least one number.");
       setLoading(false);
       return;
     }
@@ -49,10 +54,12 @@ export default function RegisterPage() {
       },
       {
         onSuccess: () => {
+          toast.success("Registration successful!");
           router.push("/dashboard");
         },
         onError: (ctx) => {
           setError(ctx.error.message || "Registration failed");
+          toast.error(ctx.error.message || "Registration failed");
           setLoading(false);
         },
       }

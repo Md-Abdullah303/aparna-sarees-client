@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import toast from "react-hot-toast";
 
 type FormState = {
   name: string;
@@ -36,6 +37,7 @@ export default function ContactPage() {
     e.preventDefault();
     if (!form.name || !form.email || !form.message) {
       setErrorMsg("Please fill in your name, email, and message.");
+      toast.error("Please fill in your name, email, and message.");
       setSubmitStatus("error");
       return;
     }
@@ -53,14 +55,17 @@ export default function ContactPage() {
 
       if (res.ok) {
         setSubmitStatus("success");
+        toast.success("Message sent successfully!");
         setForm({ name: "", email: "", subject: "", message: "" });
       } else {
         const data = await res.json();
         setErrorMsg(data.message || "Failed to send message.");
+        toast.error(data.message || "Failed to send message.");
         setSubmitStatus("error");
       }
     } catch {
       setErrorMsg("Network error. Please try again.");
+      toast.error("Network error. Please try again.");
       setSubmitStatus("error");
     } finally {
       setSubmitting(false);

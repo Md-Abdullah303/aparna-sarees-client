@@ -30,6 +30,8 @@ export const metadata: Metadata = {
     "Browse and shop exquisite handcrafted sarees from Aparna Sarees — tradition meets timeless elegance.",
 };
 
+import { Toaster } from "react-hot-toast";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -55,6 +57,7 @@ export default function RootLayout({
       </head>
       <body suppressHydrationWarning className="min-h-full flex flex-col bg-[var(--color-background)] text-[var(--color-text)]">
         {children}
+        <Toaster position="top-right" />
       </body>
     </html>
   );
