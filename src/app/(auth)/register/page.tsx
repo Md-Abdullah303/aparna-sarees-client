@@ -12,7 +12,6 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [role, setRole] = useState("user");
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -25,7 +24,6 @@ export default function RegisterPage() {
         email,
         password,
         name,
-        role,
       });
 
       if (signUpError) {
@@ -33,12 +31,8 @@ export default function RegisterPage() {
         setLoading(false);
         return;
       }
-      
-      if (role === "seller") {
-        router.push("/dashboard/seller");
-      } else {
-        router.push("/dashboard/user");
-      }
+
+      router.push("/dashboard");
     } catch (err: any) {
       setError(err?.message || "An unexpected error occurred");
       setLoading(false);
@@ -60,17 +54,17 @@ export default function RegisterPage() {
         <div className="absolute bottom-12 left-12 text-white">
           <h2 className="font-hero text-5xl font-bold">Aparna Sarees</h2>
           <p className="mt-4 max-w-sm text-lg font-light italic text-white/90">
-            "Preserving the loom, weaving the future. Experience the timeless allure of handcrafted heritage."
+            &quot;Preserving the loom, weaving the future. Experience the timeless allure of handcrafted heritage.&quot;
           </p>
         </div>
       </div>
 
       {/* Right Form Section */}
       <div className="relative flex w-full items-center justify-center bg-[#FFF9D0] p-8 md:w-1/2 lg:p-16">
-        
+
         {/* Back Button */}
-        <Link 
-          href="/" 
+        <Link
+          href="/"
           className="absolute left-6 top-6 flex items-center gap-2 text-sm font-semibold text-[#590d0d]/70 transition-colors hover:text-[#590d0d] md:left-10 md:top-10"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-4 w-4">
@@ -128,36 +122,6 @@ export default function RegisterPage() {
               />
             </div>
 
-            <div className="flex flex-col gap-3">
-              <label className="text-xs font-bold uppercase tracking-wider">
-                Select Role
-              </label>
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2 cursor-pointer text-sm text-[#590d0d]">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="user"
-                    checked={role === "user"}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="h-4 w-4 text-[#590d0d] focus:ring-[#590d0d]"
-                  />
-                  User
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer text-sm text-[#590d0d]">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="seller"
-                    checked={role === "seller"}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="h-4 w-4 text-[#590d0d] focus:ring-[#590d0d]"
-                  />
-                  Seller
-                </label>
-              </div>
-            </div>
-
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -166,7 +130,7 @@ export default function RegisterPage() {
                 className="h-4 w-4 rounded border-[#590d0d] text-[#590d0d] focus:ring-[#590d0d]"
               />
               <label htmlFor="terms" className="text-xs text-[#590d0d]/80">
-                I agree to the <span className="font-bold">Terms & Conditions</span> and <span className="font-bold">Privacy Policy</span>.
+                I agree to the <span className="font-bold">Terms &amp; Conditions</span> and <span className="font-bold">Privacy Policy</span>.
               </label>
             </div>
 
