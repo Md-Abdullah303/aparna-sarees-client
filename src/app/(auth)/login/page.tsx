@@ -18,23 +18,21 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
-    try {
-      const { error: signInError } = await authClient.signIn.email({
+    await authClient.signIn.email(
+      {
         email,
         password,
-      });
-
-      if (signInError) {
-        setError(signInError.message || "Invalid credentials");
-        setLoading(false);
-        return;
+      },
+      {
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+        onError: (ctx) => {
+          setError(ctx.error.message || "Invalid credentials");
+          setLoading(false);
+        },
       }
-
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred");
-      setLoading(false);
-    }
+    );
   };
 
   return (

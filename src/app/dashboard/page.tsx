@@ -127,6 +127,9 @@ export default function DashboardPage() {
       return;
     }
 
+    const finalImages = form.imageInput.trim() ? [...form.images, form.imageInput.trim()] : form.images;
+    const finalTags = form.tagsInput.trim() ? [...form.tags, form.tagsInput.trim().toLowerCase()] : form.tags;
+
     setSubmitting(true);
     const payload = {
       name: form.name,
@@ -137,8 +140,8 @@ export default function DashboardPage() {
       color: form.color,
       size: form.size,
       quantity: Number(form.quantity || 0),
-      images: form.images,
-      tags: form.tags,
+      images: finalImages,
+      tags: finalTags,
       isAvailable: form.isAvailable,
     };
 

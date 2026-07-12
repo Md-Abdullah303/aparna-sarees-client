@@ -19,24 +19,44 @@ export default function RegisterPage() {
     setLoading(true);
     setError("");
 
-    try {
-      const { error: signUpError } = await authClient.signUp.email({
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      setLoading(false);
+      return;
+    }
+    if (!/[A-Z]/.test(password)) {
+      setError("Password must contain at least one uppercase letter.");
+      setLoading(false);
+      return;
+    }
+    if (!/[a-z]/.test(password)) {
+      setError("Password must contain at least one lowercase letter.");
+      setLoading(false);
+      return;
+    }
+    if (!/[0-9]/.test(password)) {
+      setError("Password must contain at least one number.");
+      setLoading(false);
+      return;
+    }
+
+
+    await authClient.signUp.email(
+      {
         email,
         password,
         name,
-      });
-
-      if (signUpError) {
-        setError(signUpError.message || "Registration failed");
-        setLoading(false);
-        return;
+      },
+      {
+        onSuccess: () => {
+          router.push("/dashboard");
+        },
+        onError: (ctx) => {
+          setError(ctx.error.message || "Registration failed");
+          setLoading(false);
+        },
       }
-
-      router.push("/dashboard");
-    } catch (err: any) {
-      setError(err?.message || "An unexpected error occurred");
-      setLoading(false);
-    }
+    );
   };
 
   return (

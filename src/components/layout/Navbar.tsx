@@ -76,18 +76,28 @@ export function Navbar() {
               })}
 
               {!user && (
-                <li>
-                  <Link
-                    href="/login"
-                    className={`px-3 py-2 text-sm font-medium transition-colors lg:text-[15px] ${
-                      isActive(pathname, "/login")
-                        ? "text-[#9d713c] font-semibold"
-                        : "text-[#5a4838] hover:text-[#9d713c]"
-                    }`}
-                  >
-                    Login
-                  </Link>
-                </li>
+                <>
+                  <li>
+                    <Link
+                      href="/login"
+                      className={`px-3 py-2 text-sm font-medium transition-colors lg:text-[15px] ${
+                        isActive(pathname, "/login")
+                          ? "text-[#9d713c] font-semibold"
+                          : "text-[#5a4838] hover:text-[#9d713c]"
+                      }`}
+                    >
+                      Login
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/register"
+                      className="rounded-full bg-[#590d0d] px-4 py-2 text-sm font-semibold text-white transition-opacity hover:opacity-90 lg:text-[15px]"
+                    >
+                      Register
+                    </Link>
+                  </li>
+                </>
               )}
             </ul>
 
@@ -106,7 +116,7 @@ export function Navbar() {
                     {user.name}
                   </div>
                   <DropdownMenuSeparator className="bg-[#e5d5c5]" />
-                  <DropdownMenuItem onClick={() => router.push("/dashboard/user")} className="cursor-pointer text-[#5a4838] hover:bg-[#fdfaf3] hover:text-[#9d713c]">
+                  <DropdownMenuItem onClick={() => router.push("/dashboard")} className="cursor-pointer text-[#5a4838] hover:bg-[#fdfaf3] hover:text-[#9d713c]">
                     Dashboard
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleLogout} className="cursor-pointer text-red-600 hover:bg-red-50 hover:text-red-700">
