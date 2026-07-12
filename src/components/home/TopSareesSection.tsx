@@ -54,8 +54,9 @@ export function TopSareesSection() {
     fetch(`${API}/api/sarees`)
       .then((res) => res.json())
       .then((data) => {
-        if (data.success && Array.isArray(data.data)) {
-          // Take the latest 4 sarees (or any 4)
+        if (Array.isArray(data)) {
+          setSarees(data.slice(0, 4));
+        } else if (data.success && Array.isArray(data.data)) {
           setSarees(data.data.slice(0, 4));
         }
       })
