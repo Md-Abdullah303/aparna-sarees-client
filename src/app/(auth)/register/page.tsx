@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState("user");
   const router = useRouter();
 
   const handleRegister = async (e: React.FormEvent) => {
@@ -24,6 +25,7 @@ export default function RegisterPage() {
         email,
         password,
         name,
+        role,
       });
 
       if (signUpError) {
@@ -32,7 +34,11 @@ export default function RegisterPage() {
         return;
       }
       
-      router.push("/dashboard/user");
+      if (role === "seller") {
+        router.push("/dashboard/seller");
+      } else {
+        router.push("/dashboard/user");
+      }
     } catch (err: any) {
       setError(err?.message || "An unexpected error occurred");
       setLoading(false);
@@ -122,6 +128,36 @@ export default function RegisterPage() {
               />
             </div>
 
+            <div className="flex flex-col gap-3">
+              <label className="text-xs font-bold uppercase tracking-wider">
+                Select Role
+              </label>
+              <div className="flex items-center gap-4">
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-[#590d0d]">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="user"
+                    checked={role === "user"}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="h-4 w-4 text-[#590d0d] focus:ring-[#590d0d]"
+                  />
+                  User
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer text-sm text-[#590d0d]">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="seller"
+                    checked={role === "seller"}
+                    onChange={(e) => setRole(e.target.value)}
+                    className="h-4 w-4 text-[#590d0d] focus:ring-[#590d0d]"
+                  />
+                  Seller
+                </label>
+              </div>
+            </div>
+
             <div className="flex items-center gap-3">
               <input
                 type="checkbox"
@@ -155,15 +191,6 @@ export default function RegisterPage() {
             <Link href="/login" className="font-bold hover:underline">
               Login
             </Link>
-          </div>
-
-          <div className="mt-10 flex items-center justify-center gap-4 border-t border-[#590d0d]/20 pt-6">
-             <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-4 py-2 text-xs font-semibold hover:bg-white/50">
-               Google
-             </button>
-             <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-4 py-2 text-xs font-semibold hover:bg-white/50">
-               Facebook
-             </button>
           </div>
 
         </div>

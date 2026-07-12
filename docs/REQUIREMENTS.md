@@ -276,6 +276,7 @@ When a Seller adds a new saree, the form should include:
 - Theme: Light/Dark mode toggle — persistent preference
 - Color system: 3 colors — Primary, Secondary, Tertiary/Accent
 - Design must be professional and visually polished
+- **CRITICAL AI INSTRUCTION:** After every particular step is complete, the AI must commit the changes to Git and push to GitHub for other AIs to have access to the latest code.
 
 ---
 

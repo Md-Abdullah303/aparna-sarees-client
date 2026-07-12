@@ -130,11 +130,8 @@ export default function LoginPage() {
           </div>
 
           <div className="mt-10 flex items-center justify-center gap-4 border-t border-[#590d0d]/20 pt-6">
-             <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-4 py-2 text-xs font-semibold hover:bg-white/50">
-               Google
-             </button>
-             <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-4 py-2 text-xs font-semibold hover:bg-white/50">
-               Facebook
+             <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-6 py-2.5 text-sm font-semibold hover:bg-white/50 transition-colors">
+               <span role="img" aria-label="Google" className="text-lg">🇬</span> Google
              </button>
           </div>
         </div>
