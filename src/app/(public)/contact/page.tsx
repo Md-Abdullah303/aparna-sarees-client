@@ -3,11 +3,68 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 
+type FormState = {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+};
+
 export default function ContactPage() {
   const [focusedInput, setFocusedInput] = useState<string | null>(null);
+  const [form, setForm] = useState<FormState>({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
 
   const getLabelColor = (inputId: string) => {
     return focusedInput === inputId ? "#570000" : "";
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    setForm((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name || !form.email || !form.message) {
+      setErrorMsg("Please fill in your name, email, and message.");
+      setSubmitStatus("error");
+      return;
+    }
+
+    setSubmitting(true);
+    setSubmitStatus("idle");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/server/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      if (res.ok) {
+        setSubmitStatus("success");
+        setForm({ name: "", email: "", subject: "", message: "" });
+      } else {
+        const data = await res.json();
+        setErrorMsg(data.message || "Failed to send message.");
+        setSubmitStatus("error");
+      }
+    } catch {
+      setErrorMsg("Network error. Please try again.");
+      setSubmitStatus("error");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -101,15 +158,44 @@ export default function ContactPage() {
             transition={{ duration: 0.8 }}
             className="bg-white p-8 md:p-12 border border-[#e2bfb9]/20 shadow-sm rounded-sm"
           >
-            <form className="space-y-10" onSubmit={e => e.preventDefault()}>
+            {/* Success Message */}
+            {submitStatus === "success" && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 rounded-sm bg-green-50 border border-green-200 p-5 text-center"
+              >
+                <span className="text-3xl block mb-2">✉️</span>
+                <p className="font-bold text-green-800 text-lg">Message Sent!</p>
+                <p className="text-green-700 text-sm mt-1">
+                  Thank you for reaching out. We&apos;ll get back to you soon.
+                </p>
+              </motion.div>
+            )}
+
+            {/* Error Message */}
+            {submitStatus === "error" && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-8 rounded-sm bg-red-50 border border-red-200 p-4"
+              >
+                <p className="text-red-700 text-sm font-medium">{errorMsg}</p>
+              </motion.div>
+            )}
+
+            <form className="space-y-10" onSubmit={handleSubmit}>
               <div className="relative">
                 <input 
                   className="w-full py-2 bg-transparent border-0 border-b border-[#ffe088] transition-all duration-300 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-[#570000] peer placeholder-transparent" 
                   id="name" 
                   placeholder="Full Name" 
                   type="text"
+                  value={form.name}
+                  onChange={handleChange}
                   onFocus={() => setFocusedInput("name")}
                   onBlur={() => setFocusedInput(null)}
+                  required
                 />
                 <label 
                   className="absolute left-0 -top-6 text-sm text-secondary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-placeholder-shown:text-[#5a413d]/60 peer-focus:-top-6 peer-focus:text-secondary peer-focus:text-sm" 
@@ -126,8 +212,11 @@ export default function ContactPage() {
                   id="email" 
                   placeholder="Email Address" 
                   type="email"
+                  value={form.email}
+                  onChange={handleChange}
                   onFocus={() => setFocusedInput("email")}
                   onBlur={() => setFocusedInput(null)}
+                  required
                 />
                 <label 
                   className="absolute left-0 -top-6 text-sm text-secondary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-placeholder-shown:text-[#5a413d]/60 peer-focus:-top-6 peer-focus:text-secondary peer-focus:text-sm" 
@@ -142,7 +231,8 @@ export default function ContactPage() {
                 <select 
                   className="w-full py-2 bg-transparent border-0 border-b border-[#ffe088] transition-all duration-300 focus:outline-none focus:ring-0 focus:border-b-2 focus:border-[#570000] appearance-none" 
                   id="subject"
-                  defaultValue=""
+                  value={form.subject}
+                  onChange={handleChange}
                   onFocus={() => setFocusedInput("subject")}
                   onBlur={() => setFocusedInput(null)}
                 >
@@ -167,8 +257,11 @@ export default function ContactPage() {
                   id="message" 
                   placeholder="Message" 
                   rows={4}
+                  value={form.message}
+                  onChange={handleChange}
                   onFocus={() => setFocusedInput("message")}
                   onBlur={() => setFocusedInput(null)}
+                  required
                 ></textarea>
                 <label 
                   className="absolute left-0 -top-6 text-sm text-secondary transition-all peer-placeholder-shown:text-base peer-placeholder-shown:top-2 peer-placeholder-shown:text-[#5a413d]/60 peer-focus:-top-6 peer-focus:text-secondary peer-focus:text-sm" 
@@ -179,9 +272,22 @@ export default function ContactPage() {
                 </label>
               </div>
 
-              <button className="w-full bg-primary text-[#ffe088] py-5 px-8 text-sm font-bold uppercase tracking-widest hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-3" type="submit">
-                <span>Send Message</span>
-                <span className="material-symbols-outlined scale-75">send</span>
+              <button 
+                className="w-full bg-primary text-[#ffe088] py-5 px-8 text-sm font-bold uppercase tracking-widest hover:bg-primary/90 transition-all duration-300 flex items-center justify-center space-x-3 disabled:opacity-60 disabled:cursor-not-allowed" 
+                type="submit"
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <>
+                    <span>Sending…</span>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#ffe088]/30 border-t-[#ffe088]" />
+                  </>
+                ) : (
+                  <>
+                    <span>Send Message</span>
+                    <span className="material-symbols-outlined scale-75">send</span>
+                  </>
+                )}
               </button>
             </form>
           </motion.div>
