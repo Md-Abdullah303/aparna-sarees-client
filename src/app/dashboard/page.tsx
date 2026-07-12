@@ -42,7 +42,7 @@ const EMPTY_FORM = {
   isAvailable: true,
 };
 
-type Tab = "manage" | "add";
+type Tab = "manage" | "add" | "profile";
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
@@ -58,8 +58,25 @@ export default function DashboardPage() {
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  // ─── Profile State ────────────────────────────────────────────────────────
+  const [profileName, setProfileName] = useState("");
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+  const [profileImagePreview, setProfileImagePreview] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [updatingProfile, setUpdatingProfile] = useState(false);
+
   const user = session?.user;
   const avatarInitial = user?.name?.charAt(0).toUpperCase() ?? "U";
+
+  useEffect(() => {
+    if (user) {
+      setProfileName(user.name ?? "");
+      if (user.image && !profileImagePreview) {
+        setProfileImagePreview(user.image);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   // ─── Fetch my sarees ─────────────────────────────────────────────────────
   const fetchMySarees = async () => {
@@ -80,6 +97,87 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchMySarees();
   }, []);
+
+  // ─── Profile Update ───────────────────────────────────────────────────────
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      const file = e.dataTransfer.files[0];
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+    }
+  };
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setProfileImageFile(file);
+      setProfileImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpdateProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUpdatingProfile(true);
+    let finalImageUrl = profileImagePreview;
+
+    if (profileImageFile) {
+      const formData = new FormData();
+      formData.append("image", profileImageFile);
+      const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
+      
+      if (!apiKey) {
+        toast.error("ImgBB API Key is missing. Check .env.local.");
+        setUpdatingProfile(false);
+        return;
+      }
+
+      try {
+        const uploadRes = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
+          method: "POST",
+          body: formData,
+        });
+        const uploadData = await uploadRes.json();
+        
+        if (uploadData.success) {
+          finalImageUrl = uploadData.data.url;
+        } else {
+          toast.error("Image upload failed.");
+          setUpdatingProfile(false);
+          return;
+        }
+      } catch (err) {
+        toast.error("Network error during image upload.");
+        setUpdatingProfile(false);
+        return;
+      }
+    }
+
+    try {
+      const { data, error } = await authClient.updateUser({
+        name: profileName,
+        image: finalImageUrl,
+      });
+      
+      if (error) {
+        toast.error(error.message || "Failed to update profile");
+      } else {
+        toast.success("Profile updated successfully!");
+      }
+    } catch (err) {
+      toast.error("An error occurred while updating profile.");
+    } finally {
+      setUpdatingProfile(false);
+    }
+  };
 
   // ─── Sign out ─────────────────────────────────────────────────────────────
   const handleSignOut = async () => {
@@ -241,6 +339,15 @@ export default function DashboardPage() {
       icon: (
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5">
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        </svg>
+      ),
+    },
+    {
+      tab: "profile",
+      label: "Update Profile",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
         </svg>
       ),
     },
@@ -546,6 +653,79 @@ export default function DashboardPage() {
                     </button>
                     <button type="button" onClick={cancelEdit} className="rounded-lg border border-[#590d0d]/20 px-6 py-2.5 text-sm font-semibold text-[#590d0d] transition-colors hover:bg-[#590d0d]/5">
                       Cancel
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          )}
+          {/* ── PROFILE TAB ─────────────────────────────────────────────── */}
+          {activeTab === "profile" && (
+            <div className="mx-auto max-w-xl">
+              <form onSubmit={handleUpdateProfile} className="rounded-xl border border-[#590d0d]/10 bg-white/70 p-8 shadow-sm">
+                <div className="flex flex-col gap-6">
+                  <div>
+                    <h2 className="text-lg font-bold text-[#590d0d]">Update Profile</h2>
+                    <p className="text-sm text-[#590d0d]/60">Customize your display name and profile picture.</p>
+                  </div>
+                  
+                  {/* Name Input */}
+                  <div>
+                    <label className={labelCls}>Full Name</label>
+                    <input 
+                      type="text" 
+                      value={profileName} 
+                      onChange={(e) => setProfileName(e.target.value)} 
+                      placeholder="Your name" 
+                      required 
+                      className={inputCls} 
+                    />
+                  </div>
+
+                  {/* Image Drag and Drop */}
+                  <div>
+                    <label className={labelCls}>Profile Picture</label>
+                    <div 
+                      onDragOver={handleDragOver}
+                      onDragLeave={handleDragLeave}
+                      onDrop={handleDrop}
+                      className={`relative flex flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-8 transition-colors ${
+                        isDragging ? "border-[#590d0d] bg-[#590d0d]/5" : "border-[#590d0d]/20 hover:border-[#590d0d]/40"
+                      }`}
+                    >
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="absolute inset-0 z-10 h-full w-full cursor-pointer opacity-0"
+                      />
+                      {profileImagePreview ? (
+                        <div className="relative h-24 w-24 rounded-full overflow-hidden border-4 border-white shadow-md">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={profileImagePreview} alt="Preview" className="h-full w-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#590d0d]/10 text-[#590d0d]">
+                          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="h-8 w-8">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6.827 6.175A2.31 2.31 0 0 1 5.186 7.23c-.38.054-.757.112-1.134.175C2.999 7.58 2.25 8.507 2.25 9.574V18a2.25 2.25 0 0 0 2.25 2.25h15A2.25 2.25 0 0 0 21.75 18V9.574c0-1.067-.75-1.994-1.802-2.169a47.865 47.865 0 0 0-1.134-.175 2.31 2.31 0 0 1-1.64-1.055l-.822-1.316a2.192 2.192 0 0 0-1.736-1.039 48.774 48.774 0 0 0-5.232 0 2.192 2.192 0 0 0-1.736 1.039l-.821 1.316Z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 12.75a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0ZM18.75 10.5h.008v.008h-.008V10.5Z" />
+                          </svg>
+                        </div>
+                      )}
+                      <p className="mt-4 text-sm font-semibold text-[#590d0d]">
+                        {profileImagePreview ? "Click or drag to change image" : "Drag and drop or click to upload image"}
+                      </p>
+                      <p className="mt-1 text-xs text-[#590d0d]/50">SVG, PNG, JPG or GIF (max. 5MB)</p>
+                    </div>
+                  </div>
+
+                  <div className="pt-4 border-t border-[#590d0d]/10">
+                    <button 
+                      type="submit" 
+                      disabled={updatingProfile} 
+                      className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#590d0d] px-8 py-3 text-sm font-bold tracking-widest text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+                    >
+                      {updatingProfile ? "UPDATING..." : "SAVE PROFILE"}
                     </button>
                   </div>
                 </div>
