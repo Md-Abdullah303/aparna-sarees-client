@@ -64,14 +64,14 @@ export default function BrowseSareesPage() {
             <p className="text-[#590d0d]/70 mt-2">Check back later for new collections.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {sarees.map((saree) => (
               <div 
                 key={saree._id} 
-                className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1 border border-[#590d0d]/10"
+                className="group flex flex-col overflow-hidden rounded-xl bg-white shadow-sm transition-all hover:shadow-lg hover:-translate-y-1 border border-[#590d0d]/10"
               >
                 {/* Image Section */}
-                <div className="relative aspect-[3/4] w-full overflow-hidden bg-gray-100">
+                <div className="relative aspect-[4/5] w-full overflow-hidden bg-gray-100">
                   {saree.images && saree.images.length > 0 ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
@@ -84,56 +84,48 @@ export default function BrowseSareesPage() {
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center bg-[#590d0d]/5">
-                      <span className="text-4xl opacity-20">🧣</span>
+                      <span className="text-3xl opacity-20">🧣</span>
                     </div>
                   )}
                   
                   {/* Category Badge */}
                   {saree.category && (
-                    <div className="absolute top-3 left-3 rounded-full bg-white/90 px-3 py-1 text-xs font-bold text-[#590d0d] shadow-sm backdrop-blur-sm">
+                    <div className="absolute top-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[10px] font-bold text-[#590d0d] shadow-sm backdrop-blur-sm">
                       {saree.category}
                     </div>
                   )}
                 </div>
 
                 {/* Content Section */}
-                <div className="flex flex-1 flex-col p-5">
-                  <h3 className="font-display text-lg font-bold text-[#590d0d] line-clamp-1">
+                <div className="flex flex-1 flex-col p-4">
+                  <h3 className="font-display text-base font-bold text-[#590d0d] line-clamp-1">
                     {saree.name}
                   </h3>
-                  <p className="mt-1 text-sm text-[#590d0d]/60 line-clamp-2 min-h-[40px]">
+                  <p className="mt-1 text-xs text-[#590d0d]/60 line-clamp-2 min-h-[32px]">
                     {saree.description}
                   </p>
 
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="text-lg font-bold text-[#9d713c]">
+                  <div className="mt-3 flex items-center justify-between">
+                    <span className="text-base font-bold text-[#9d713c]">
                       ৳{saree.price.toLocaleString()}
                     </span>
                     {saree.quantity > 0 ? (
-                      <span className="text-xs font-semibold text-green-600 bg-green-50 px-2.5 py-1 rounded-md border border-green-100">
+                      <span className="text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded border border-green-100">
                         In Stock
                       </span>
                     ) : (
-                      <span className="text-xs font-semibold text-red-500 bg-red-50 px-2.5 py-1 rounded-md border border-red-100">
+                      <span className="text-[10px] font-semibold text-red-500 bg-red-50 px-2 py-0.5 rounded border border-red-100">
                         Sold Out
                       </span>
                     )}
                   </div>
                   
-                  {saree.tags && saree.tags.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-1.5">
-                      {saree.tags.slice(0, 3).map((tag, idx) => (
-                        <span key={idx} className="text-[10px] font-semibold text-[#590d0d]/50 uppercase tracking-wider bg-[#590d0d]/5 px-2 py-0.5 rounded-sm">
-                          #{tag}
-                        </span>
-                      ))}
-                      {saree.tags.length > 3 && (
-                        <span className="text-[10px] font-semibold text-[#590d0d]/40">
-                          +{saree.tags.length - 3} more
-                        </span>
-                      )}
-                    </div>
-                  )}
+                  <Link 
+                    href={`/browse-sarees/${saree._id}`}
+                    className="mt-4 block w-full rounded-md bg-[#590d0d] py-2 text-center text-xs font-semibold text-white transition-opacity hover:opacity-90"
+                  >
+                    Show Details
+                  </Link>
                 </div>
               </div>
             ))}
