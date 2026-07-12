@@ -267,11 +267,10 @@ export default function BrowseSareesPage() {
                     >
                       <span
                         onClick={() => toggleCategory(cat)}
-                        className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all cursor-pointer ${
-                          active
+                        className={`w-4 h-4 rounded border flex-shrink-0 flex items-center justify-center transition-all cursor-pointer ${active
                             ? "bg-[#590d0d] border-[#590d0d]"
                             : "border-[#c8b49a] group-hover:border-[#590d0d]"
-                        }`}
+                          }`}
                       >
                         {active && (
                           <svg className="h-2.5 w-2.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -281,11 +280,10 @@ export default function BrowseSareesPage() {
                       </span>
                       <span
                         onClick={() => toggleCategory(cat)}
-                        className={`text-sm transition-colors ${
-                          active
+                        className={`text-sm transition-colors ${active
                             ? "text-[#590d0d] font-semibold"
                             : "text-[#6b5040] group-hover:text-[#590d0d]"
-                        }`}
+                          }`}
                       >
                         {cat}
                       </span>
@@ -448,11 +446,10 @@ export default function BrowseSareesPage() {
                       <button
                         key={cat}
                         onClick={() => toggleCategory(cat)}
-                        className={`py-2 px-3 rounded text-xs font-semibold border transition-all ${
-                          active
+                        className={`py-2 px-3 rounded text-xs font-semibold border transition-all ${active
                             ? "bg-[#590d0d] text-white border-[#590d0d]"
                             : "border-[#d8c9b5] text-[#6b5040] hover:border-[#590d0d]"
-                        }`}
+                          }`}
                       >
                         {cat}
                       </button>
@@ -522,6 +519,7 @@ export default function BrowseSareesPage() {
                         <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-[#ede8e0] mb-3">
                           {saree.images && saree.images.length > 0 ? (
                             // eslint-disable-next-line @next/next/no-img-element
+
                             <img
                               src={saree.images[0]}
                               alt={saree.name}
@@ -540,15 +538,14 @@ export default function BrowseSareesPage() {
                           {/* Badge */}
                           {badge && (
                             <div
-                              className={`absolute top-3 left-3 px-2 py-1 text-[9px] font-black uppercase tracking-widest ${
-                                badge === "BESTSELLER"
+                              className={`absolute top-3 left-3 px-2 py-1 text-[9px] font-black uppercase tracking-widest ${badge === "BESTSELLER"
                                   ? "bg-[#590d0d] text-[#ffe088]"
                                   : badge === "NEW ARRIVAL"
-                                  ? "bg-[#1a5c1a] text-white"
-                                  : badge === "EXCLUSIVE"
-                                  ? "bg-[#1a3a5c] text-white"
-                                  : "bg-white/90 text-[#590d0d] backdrop-blur-sm"
-                              }`}
+                                    ? "bg-[#1a5c1a] text-white"
+                                    : badge === "EXCLUSIVE"
+                                      ? "bg-[#1a3a5c] text-white"
+                                      : "bg-white/90 text-[#590d0d] backdrop-blur-sm"
+                                }`}
                             >
                               {badge}
                             </div>
@@ -639,11 +636,10 @@ export default function BrowseSareesPage() {
                                 setCurrentPage(page as number);
                                 window.scrollTo({ top: 0, behavior: "smooth" });
                               }}
-                              className={`w-9 h-9 text-xs font-bold border transition-all duration-200 ${
-                                currentPage === page
+                              className={`w-9 h-9 text-xs font-bold border transition-all duration-200 ${currentPage === page
                                   ? "bg-[#590d0d] text-[#ffe088] border-[#590d0d]"
                                   : "border-[#d8c9b5] text-[#590d0d] hover:bg-[#f1ebe0]"
-                              }`}
+                                }`}
                             >
                               {page}
                             </button>

@@ -53,8 +53,9 @@ export default function RegisterPage() {
         name,
       },
       {
-        onSuccess: () => {
+        onSuccess: async () => {
           toast.success("Registration successful!");
+          await authClient.signIn.email({ email, password });
           router.push("/dashboard");
         },
         onError: (ctx) => {
