@@ -42,7 +42,16 @@ const EMPTY_FORM = {
   isAvailable: true,
 };
 
-type Tab = "manage" | "add" | "profile";
+type Tab = "manage" | "add" | "profile" | "payments";
+
+type Payment = {
+  id: string;
+  amount: number;
+  currency: string;
+  status: string;
+  created: number;
+  metadata: { sareeName?: string; sareeId?: string };
+};
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export default function DashboardPage() {
@@ -57,6 +66,11 @@ export default function DashboardPage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // ─── Payments State ───────────────────────────────────────────────────────
+  const [payments, setPayments] = useState<Payment[]>([]);
+  const [loadingPayments, setLoadingPayments] = useState(false);
+  const [paymentsError, setPaymentsError] = useState("");
 
   // ─── Profile State ────────────────────────────────────────────────────────
   const [profileName, setProfileName] = useState("");
@@ -97,6 +111,31 @@ export default function DashboardPage() {
   useEffect(() => {
     fetchMySarees();
   }, []);
+
+  // ─── Fetch Payments ───────────────────────────────────────────────────────
+  const fetchPayments = async () => {
+    setLoadingPayments(true);
+    setPaymentsError("");
+    try {
+      const email = user?.email;
+      if (!email) throw new Error("Please log in to view payments.");
+      
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+      const res = await fetch(`${API_URL}/api/stripe/payments?email=${encodeURIComponent(email)}`);
+      if (!res.ok) throw new Error("Failed to load payments");
+      const data = await res.json();
+      setPayments(data.payments || []);
+    } catch (err: any) {
+      setPaymentsError(err.message || "Could not load payments");
+    } finally {
+      setLoadingPayments(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === "payments") fetchPayments();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, user?.email]);
 
   // ─── Profile Update ───────────────────────────────────────────────────────
   const handleDragOver = (e: React.DragEvent) => {
@@ -351,6 +390,15 @@ export default function DashboardPage() {
         </svg>
       ),
     },
+    {
+      tab: "payments",
+      label: "Payment History",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.8} stroke="currentColor" className="h-5 w-5">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 0 0 2.25-2.25V6.75A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25v10.5A2.25 2.25 0 0 0 4.5 19.5Z" />
+        </svg>
+      ),
+    },
   ];
 
   // ─── Input class reuse ────────────────────────────────────────────────────
@@ -433,11 +481,14 @@ export default function DashboardPage() {
         {/* Top bar */}
         <header className="border-b border-[#590d0d]/10 bg-white/50 px-8 py-4 backdrop-blur-sm">
           <h1 className="text-xl font-bold text-[#590d0d]">
-            {activeTab === "manage" ? "My Sarees" : editingId ? "Edit Saree" : "Add New Saree"}
+            {activeTab === "manage" ? "My Sarees" : activeTab === "payments" ? "Payment History" : activeTab === "profile" ? "Update Profile" : editingId ? "Edit Saree" : "Add New Saree"}
           </h1>
           <p className="mt-0.5 text-xs text-[#590d0d]/50">
             {activeTab === "manage"
               ? `${sarees.length} saree${sarees.length !== 1 ? "s" : ""} listed.`
+              : activeTab === "payments"
+              ? `${payments.length} transaction${payments.length !== 1 ? "s" : ""} recorded.`
+              : activeTab === "profile" ? "Update your personal information."
               : editingId ? "Update your saree details." : "Fill in the fields to list a new saree."}
           </p>
         </header>
@@ -730,6 +781,107 @@ export default function DashboardPage() {
                   </div>
                 </div>
               </form>
+            </div>
+          )}
+
+          {/* ── PAYMENTS TAB ──────────────────────────────────── */}
+          {activeTab === "payments" && (
+            <div>
+              {loadingPayments ? (
+                <div className="flex items-center justify-center py-24">
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#590d0d]/20 border-t-[#590d0d]" />
+                    <p className="text-sm text-[#590d0d]/60">Loading payment history...</p>
+                  </div>
+                </div>
+              ) : paymentsError ? (
+                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-red-200 bg-red-50/40 py-24">
+                  <span className="text-5xl">⚠️</span>
+                  <p className="mt-4 text-sm font-semibold text-red-600">{paymentsError}</p>
+                  <button onClick={fetchPayments} className="mt-4 rounded-lg bg-[#590d0d] px-5 py-2 text-sm font-bold text-white hover:opacity-90">
+                    Retry
+                  </button>
+                </div>
+              ) : payments.length === 0 ? (
+                <div className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-[#590d0d]/20 bg-white/40 py-24">
+                  <span className="text-6xl">💳</span>
+                  <p className="mt-5 text-base font-semibold text-[#590d0d]/60">No payments yet</p>
+                  <p className="mt-2 text-sm text-[#590d0d]/40">When customers purchase your sarees, transactions will appear here.</p>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {/* Summary Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+                    <div className="rounded-xl border border-[#590d0d]/10 bg-white/80 p-5 shadow-sm">
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#590d0d]/50">Total Revenue</p>
+                      <p className="mt-2 text-2xl font-bold text-[#590d0d]">
+                        ৳{payments.filter(p => p.status === "succeeded").reduce((sum, p) => sum + p.amount / 100, 0).toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-[#590d0d]/10 bg-white/80 p-5 shadow-sm">
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#590d0d]/50">Successful Payments</p>
+                      <p className="mt-2 text-2xl font-bold text-green-600">
+                        {payments.filter(p => p.status === "succeeded").length}
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-[#590d0d]/10 bg-white/80 p-5 shadow-sm">
+                      <p className="text-xs font-bold uppercase tracking-widest text-[#590d0d]/50">Total Transactions</p>
+                      <p className="mt-2 text-2xl font-bold text-[#1a1a1a]">{payments.length}</p>
+                    </div>
+                  </div>
+
+                  {/* Table */}
+                  <div className="overflow-hidden rounded-xl border border-[#590d0d]/10 bg-white/80 shadow-sm">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-[#590d0d]/10 bg-[#590d0d]/5 text-left">
+                            <th className="px-5 py-3.5 font-bold text-[#590d0d]">Transaction ID</th>
+                            <th className="px-5 py-3.5 font-bold text-[#590d0d]">Saree</th>
+                            <th className="px-5 py-3.5 font-bold text-[#590d0d]">Amount</th>
+                            <th className="px-5 py-3.5 font-bold text-[#590d0d]">Status</th>
+                            <th className="px-5 py-3.5 font-bold text-[#590d0d]">Date</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#590d0d]/5">
+                          {payments.map((p) => (
+                            <tr key={p.id} className="hover:bg-[#590d0d]/3 transition-colors">
+                              <td className="px-5 py-4">
+                                <span className="font-mono text-xs text-[#590d0d]/60">{p.id.slice(0, 20)}...</span>
+                              </td>
+                              <td className="px-5 py-4">
+                                <span className="font-medium text-[#1a1a1a]">
+                                  {p.metadata?.sareeName || "Unknown Saree"}
+                                </span>
+                              </td>
+                              <td className="px-5 py-4">
+                                <span className="font-bold text-[#590d0d]">৳{(p.amount / 100).toLocaleString()}</span>
+                              </td>
+                              <td className="px-5 py-4">
+                                <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+                                  p.status === "succeeded"
+                                    ? "bg-green-100 text-green-700"
+                                    : p.status === "processing"
+                                    ? "bg-yellow-100 text-yellow-700"
+                                    : "bg-red-100 text-red-700"
+                                }`}>
+                                  <span className={`h-1.5 w-1.5 rounded-full ${
+                                    p.status === "succeeded" ? "bg-green-500" : p.status === "processing" ? "bg-yellow-500" : "bg-red-500"
+                                  }`} />
+                                  {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
+                                </span>
+                              </td>
+                              <td className="px-5 py-4 text-[#590d0d]/60">
+                                {new Date(p.created * 1000).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </main>

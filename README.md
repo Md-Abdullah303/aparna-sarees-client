@@ -10,30 +10,35 @@ Aparna Sarees – Elegant Online Saree Experience
 
 ## 🎯 Purpose
 
-This project aims to present a stylish and professional saree-focused website that highlights beauty, tradition, and modern web design. It is suitable for academic submission, personal portfolio display, and future extension into a full e-commerce platform.
+This project is a fully functional, elegant e-commerce platform dedicated to sarees. It is designed to provide a premium user experience from browsing to checkout, featuring secure authentication, robust state management, real-time payment processing, and a user-centric dashboard. It serves as a complete, modern web application ready for real-world usage.
 
 ## ✨ Key Features
 
-- Modern and responsive landing page
-- Elegant saree-themed UI design
-- Clean, polished presentation for demos and review
-- Ready structure for future product listing and shopping experience
-- Smooth visual design with animated preview support
+- **User Authentication & Profiles:** Secure login, registration, and profile management with avatar uploads (via ImgBB).
+- **Dynamic Saree Browsing:** Shop by category, view detailed product pages with high-quality images, stock availability, and dynamic pricing.
+- **Secure Stripe Checkout:** Integrated real-time payments with Stripe Elements for a safe and smooth checkout experience.
+- **User Dashboard:** Dedicated dashboard for users to add and manage their listed sarees and view their personal payment history.
+- **Contact & Support:** Functional contact form that sends emails directly to the site owner via Nodemailer.
+- **Premium UI/UX:** Responsive, accessible, and beautifully animated interface using Framer Motion and Tailwind CSS.
 
 ## 🧰 Technologies Used
 
 ### Frontend
 
-- Next.js
-- React
-- Tailwind CSS
-- TypeScript
+- **Framework:** Next.js (App Router), React
+- **Styling & UI:** Tailwind CSS, Framer Motion
+- **State & Data Fetching:** React Hooks, fetch API
+- **Payments:** Stripe.js (`@stripe/react-stripe-js`)
+- **Authentication:** Better-Auth Client
 
 ### Backend / Services
 
-- Node.js (for future API integration)
-- MongoDB (can be connected for product data)
-- REST / Express-style backend support (future-ready)
+- **Server:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose)
+- **Payments:** Stripe Node.js SDK
+- **Emails:** Nodemailer
+- **Authentication:** Better-Auth Server
+- **Image Hosting:** ImgBB API
 
 ## 🚀 Live Link
 

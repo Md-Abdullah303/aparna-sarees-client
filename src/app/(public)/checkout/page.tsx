@@ -100,6 +100,8 @@ function CheckoutForm({
   );
 }
 
+import { useSession } from "@/lib/auth-client";
+
 // ─── Checkout Page Wrapper ─────────────────────────────────────
 function CheckoutContent() {
   const searchParams = useSearchParams();
@@ -108,8 +110,11 @@ function CheckoutContent() {
   const [clientSecret, setClientSecret] = useState("");
   const [loadError, setLoadError] = useState("");
   const [step, setStep] = useState<"loading" | "ready" | "error">("loading");
+  const { data: session, isPending } = useSession();
 
   useEffect(() => {
+    if (isPending) return; // wait for session to load
+    
     if (!sareeId) {
       setLoadError("No saree selected.");
       setStep("error");
@@ -131,6 +136,7 @@ function CheckoutContent() {
             amount: data.price,
             sareeId: data._id,
             sareeName: data.name,
+            userEmail: session?.user?.email || "",
           }),
         });
 
