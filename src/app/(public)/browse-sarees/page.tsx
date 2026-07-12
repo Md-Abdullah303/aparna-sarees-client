@@ -19,7 +19,7 @@ type Saree = {
   isAvailable: boolean;
 };
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = "/api/server";
 
 export default function BrowseSareesPage() {
   const [sarees, setSarees] = useState<Saree[]>([]);
