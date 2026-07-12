@@ -169,12 +169,28 @@ export default function SareeDetailsPage({
               )}
             </div>
 
-            <button 
-              className="mt-8 w-full rounded-md bg-[#7c1414] py-4 text-center text-lg font-bold text-white transition-all hover:bg-[#590d0d] active:scale-[0.98] shadow-md"
-              disabled={saree.quantity === 0}
-            >
-              {saree.quantity > 0 ? "Add to Cart" : "Out of Stock"}
-            </button>
+            <div className="mt-8 flex flex-col gap-3">
+              <Link
+                href={saree.quantity > 0 ? `/checkout?sareeId=${saree._id}` : "#"}
+                className={`flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold uppercase tracking-widest text-white shadow-lg transition-all ${
+                  saree.quantity > 0
+                    ? "bg-[#590d0d] hover:bg-[#7a1010] hover:shadow-xl active:scale-[0.98]"
+                    : "cursor-not-allowed bg-gray-400"
+                }`}
+                onClick={(e) => saree.quantity === 0 && e.preventDefault()}
+              >
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                {saree.quantity > 0 ? "Buy Now — Secure Checkout" : "Out of Stock"}
+              </Link>
+
+              {saree.quantity > 0 && (
+                <p className="text-center text-xs text-[#9d713c]">
+                  🔒 Secured by Stripe · Free Delivery Included
+                </p>
+              )}
+            </div>
 
             {/* Tags */}
             {saree.tags && saree.tags.length > 0 && (
