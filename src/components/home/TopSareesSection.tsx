@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { formatBdt, TOP_SAREES } from "@/lib/mock-data";
+import { formatBdt } from "@/lib/mock-data";
 import { SectionHeading } from "./SectionHeading";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -45,6 +46,22 @@ const item = {
 };
 
 export function TopSareesSection() {
+  const [sarees, setSarees] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/server/sarees")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data)) {
+          // Take the latest 4 sarees (or any 4)
+          setSarees(data.data.slice(0, 4));
+        }
+      })
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
   return (
     <section className="bg-[var(--color-background)] px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
       <div className="mx-auto max-w-7xl">
@@ -54,64 +71,64 @@ export function TopSareesSection() {
           description="Handpicked bestsellers loved by our customers — exquisite weaves for weddings, festivals, and everyday elegance."
         />
 
-        <motion.div
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-50px" }}
-          className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {TOP_SAREES.map((saree) => (
-            <motion.article
-              variants={item}
-              key={saree.id}
-              className="group overflow-hidden rounded-2xl border border-white/10 bg-[var(--color-surface)] shadow-lg shadow-black/10 transition-transform hover:-translate-y-1"
-            >
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <Image
-                  src={saree.image}
-                  alt={saree.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 25vw"
-                  className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                />
-                <span
-                  className={`absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-semibold ${
-                    saree.inStock
-                      ? "bg-emerald-500/90 text-white"
-                      : "bg-red-500/90 text-white"
-                  }`}
-                >
-                  {saree.inStock ? "Available" : "Out of Stock"}
-                </span>
-              </div>
-
-              <div className="p-5">
-                <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-primary)]">
-                  {saree.category}
-                </p>
-                <h3 className="mt-1 font-display text-lg font-semibold text-[var(--color-text)]">
-                  {saree.name}
-                </h3>
-                <p className="mt-2 line-clamp-2 text-sm text-[var(--color-text-muted)]">
-                  {saree.description}
-                </p>
-                <div className="mt-4 flex items-center justify-between">
-                  <p className="text-lg font-semibold text-[var(--color-primary)]">
-                    {formatBdt(saree.price)}
-                  </p>
-                  <StarRating rating={saree.rating} />
+        {loading ? (
+          <div className="mt-12 flex justify-center py-10">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-[#590d0d]/20 border-t-[#590d0d]" />
+          </div>
+        ) : (
+          <motion.div
+            variants={container}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+            className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+          >
+            {sarees.map((saree) => (
+              <motion.article
+                variants={item}
+                key={saree._id}
+                className="group overflow-hidden rounded-2xl border border-white/10 bg-[var(--color-surface)] shadow-lg shadow-black/10 transition-transform hover:-translate-y-1"
+              >
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#ede8e0]">
+                  {saree.images && saree.images.length > 0 && (
+                    <Image
+                      src={saree.images[0]}
+                      alt={saree.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 25vw"
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                  )}
                 </div>
-                <Link
-                  href={`/sarees/${saree.id}`}
-                  className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary)]/10"
-                >
-                  Show Details
-                </Link>
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
+
+                <div className="p-5">
+                  <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-primary)]">
+                    {saree.category}
+                  </p>
+                  <h3 className="mt-1 font-display text-lg font-semibold text-[var(--color-text)] line-clamp-1">
+                    {saree.name}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-sm text-[var(--color-text-muted)]">
+                    {saree.description}
+                  </p>
+                  <div className="mt-4 flex items-center justify-between">
+                    <p className="text-lg font-semibold text-[var(--color-primary)]">
+                      ৳{saree.price}
+                    </p>
+                    {/* Mock rating for now as backend might not have rating */}
+                    <StarRating rating={4.5} />
+                  </div>
+                  <Link
+                    href={`/browse-sarees/${saree._id}`}
+                    className="mt-4 inline-flex w-full items-center justify-center rounded-full border border-[var(--color-primary)] py-2.5 text-sm font-medium text-[var(--color-text)] transition-colors hover:bg-[var(--color-primary)]/10"
+                  >
+                    Show Details
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+        )}
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

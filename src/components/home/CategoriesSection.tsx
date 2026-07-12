@@ -30,25 +30,26 @@ export function CategoriesSection() {
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {categories.map((category, idx) => (
-            <motion.div
-              key={category.name}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              whileHover={{ y: -10 }}
-              className="relative group overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer"
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={category.img}
-                alt={category.name}
-                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#590d0d]/80 via-[#590d0d]/20 to-transparent flex items-end p-6">
-                <h3 className="text-white text-xl md:text-2xl font-bold font-display tracking-wide">{category.name}</h3>
-              </div>
-            </motion.div>
+            <Link key={category.name} href={`/browse-sarees?category=${encodeURIComponent(category.name)}`}>
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                whileHover={{ y: -10 }}
+                className="relative group overflow-hidden rounded-2xl aspect-[3/4] cursor-pointer"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={category.img}
+                  alt={category.name}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#590d0d]/80 via-[#590d0d]/20 to-transparent flex items-end p-6">
+                  <h3 className="text-white text-xl md:text-2xl font-bold font-display tracking-wide">{category.name}</h3>
+                </div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </div>
