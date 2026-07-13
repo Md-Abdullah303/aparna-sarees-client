@@ -4,15 +4,18 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { authClient } from "@/lib/auth-client";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
+import { Suspense } from "react";
 
-export default function LoginPage() {
+function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirect") || "/";
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,7 +30,7 @@ export default function LoginPage() {
       {
         onSuccess: () => {
           toast.success("Login successful!");
-          router.push("/dashboard");
+          router.push(redirectTo);
         },
         onError: (ctx) => {
           setError(ctx.error.message || "Invalid credentials");
@@ -53,17 +56,17 @@ export default function LoginPage() {
         <div className="absolute bottom-12 left-12 text-white">
           <h2 className="font-hero text-5xl font-bold">Welcome Back</h2>
           <p className="mt-4 max-w-sm text-lg font-light italic text-white/90">
-            "Rediscover the timeless allure of handcrafted heritage."
+            &quot;Rediscover the timeless allure of handcrafted heritage.&quot;
           </p>
         </div>
       </div>
 
       {/* Left Form Section */}
       <div className="relative flex w-full items-center justify-center bg-[#FFF9D0] p-8 md:w-1/2 lg:p-16">
-        
+
         {/* Back Button */}
-        <Link 
-          href="/" 
+        <Link
+          href="/"
           className="absolute left-6 top-6 flex items-center gap-2 text-sm font-semibold text-[#590d0d]/70 transition-colors hover:text-[#590d0d] md:left-10 md:top-10"
         >
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="h-4 w-4">
@@ -124,19 +127,27 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-8 text-center text-sm text-[#590d0d]/80">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/register" className="font-bold hover:underline">
               Register
             </Link>
           </div>
 
           <div className="mt-10 flex items-center justify-center gap-4 border-t border-[#590d0d]/20 pt-6">
-             <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-6 py-2.5 text-sm font-semibold hover:bg-white/50 transition-colors">
-               <span role="img" aria-label="Google" className="text-lg">🇬</span> Google
-             </button>
+            <button type="button" className="flex items-center justify-center gap-2 rounded-md border border-[#590d0d]/20 px-6 py-2.5 text-sm font-semibold hover:bg-white/50 transition-colors">
+              <span role="img" aria-label="Google" className="text-lg">🇬</span> Google
+            </button>
           </div>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense>
+      <LoginForm />
+    </Suspense>
   );
 }

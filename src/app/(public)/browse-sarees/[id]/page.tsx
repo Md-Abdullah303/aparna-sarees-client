@@ -2,6 +2,8 @@
 
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useSession } from "@/lib/auth-client";
 
 type Saree = {
   _id: string;
@@ -29,6 +31,19 @@ export default function SareeDetailsPage({
   const [saree, setSaree] = useState<Saree | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeImage, setActiveImage] = useState<string>("");
+  const router = useRouter();
+  const { data: session } = useSession();
+
+  const handleBuyNow = (e: React.MouseEvent) => {
+    if (saree && saree.quantity > 0) {
+      if (!session) {
+        e.preventDefault();
+        const redirectUrl = `/checkout?sareeId=${saree._id}`;
+        router.push(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+      }
+      // if session exists, normal Link navigation proceeds
+    }
+  };
 
   useEffect(() => {
     const fetchSaree = async () => {
@@ -177,7 +192,13 @@ export default function SareeDetailsPage({
                     ? "bg-[#590d0d] hover:bg-[#7a1010] hover:shadow-xl active:scale-[0.98]"
                     : "cursor-not-allowed bg-gray-400"
                 }`}
-                onClick={(e) => saree.quantity === 0 && e.preventDefault()}
+                onClick={(e) => {
+                  if (saree.quantity === 0) {
+                    e.preventDefault();
+                  } else {
+                    handleBuyNow(e);
+                  }
+                }}
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />

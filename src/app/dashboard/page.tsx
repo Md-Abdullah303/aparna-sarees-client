@@ -89,7 +89,7 @@ export default function DashboardPage() {
         setProfileImagePreview(user.image);
       }
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   // ─── Fetch my sarees ─────────────────────────────────────────────────────
@@ -119,9 +119,8 @@ export default function DashboardPage() {
     try {
       const email = user?.email;
       if (!email) throw new Error("Please log in to view payments.");
-      
-      const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-      const res = await fetch(`${API_URL}/api/stripe/payments?email=${encodeURIComponent(email)}`);
+
+      const res = await fetch(`${API}/api/stripe/payments?email=${encodeURIComponent(email)}`, { credentials: "include" });
       if (!res.ok) throw new Error("Failed to load payments");
       const data = await res.json();
       setPayments(data.payments || []);
@@ -134,7 +133,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (activeTab === "payments") fetchPayments();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, user?.email]);
 
   // ─── Profile Update ───────────────────────────────────────────────────────
@@ -172,7 +171,7 @@ export default function DashboardPage() {
       const formData = new FormData();
       formData.append("image", profileImageFile);
       const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-      
+
       if (!apiKey) {
         toast.error("ImgBB API Key is missing. Check .env.local.");
         setUpdatingProfile(false);
@@ -185,7 +184,7 @@ export default function DashboardPage() {
           body: formData,
         });
         const uploadData = await uploadRes.json();
-        
+
         if (uploadData.success) {
           finalImageUrl = uploadData.data.url;
         } else {
@@ -205,7 +204,7 @@ export default function DashboardPage() {
         name: profileName,
         image: finalImageUrl,
       });
-      
+
       if (error) {
         toast.error(error.message || "Failed to update profile");
       } else {
@@ -487,9 +486,9 @@ export default function DashboardPage() {
             {activeTab === "manage"
               ? `${sarees.length} saree${sarees.length !== 1 ? "s" : ""} listed.`
               : activeTab === "payments"
-              ? `${payments.length} transaction${payments.length !== 1 ? "s" : ""} recorded.`
-              : activeTab === "profile" ? "Update your personal information."
-              : editingId ? "Update your saree details." : "Fill in the fields to list a new saree."}
+                ? `${payments.length} transaction${payments.length !== 1 ? "s" : ""} recorded.`
+                : activeTab === "profile" ? "Update your personal information."
+                  : editingId ? "Update your saree details." : "Fill in the fields to list a new saree."}
           </p>
         </header>
 
@@ -719,30 +718,29 @@ export default function DashboardPage() {
                     <h2 className="text-lg font-bold text-[#590d0d]">Update Profile</h2>
                     <p className="text-sm text-[#590d0d]/60">Customize your display name and profile picture.</p>
                   </div>
-                  
+
                   {/* Name Input */}
                   <div>
                     <label className={labelCls}>Full Name</label>
-                    <input 
-                      type="text" 
-                      value={profileName} 
-                      onChange={(e) => setProfileName(e.target.value)} 
-                      placeholder="Your name" 
-                      required 
-                      className={inputCls} 
+                    <input
+                      type="text"
+                      value={profileName}
+                      onChange={(e) => setProfileName(e.target.value)}
+                      placeholder="Your name"
+                      required
+                      className={inputCls}
                     />
                   </div>
 
                   {/* Image Drag and Drop */}
                   <div>
                     <label className={labelCls}>Profile Picture</label>
-                    <div 
+                    <div
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
                       onDrop={handleDrop}
-                      className={`relative flex flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-8 transition-colors ${
-                        isDragging ? "border-[#590d0d] bg-[#590d0d]/5" : "border-[#590d0d]/20 hover:border-[#590d0d]/40"
-                      }`}
+                      className={`relative flex flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed p-8 transition-colors ${isDragging ? "border-[#590d0d] bg-[#590d0d]/5" : "border-[#590d0d]/20 hover:border-[#590d0d]/40"
+                        }`}
                     >
                       <input
                         type="file"
@@ -771,9 +769,9 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="pt-4 border-t border-[#590d0d]/10">
-                    <button 
-                      type="submit" 
-                      disabled={updatingProfile} 
+                    <button
+                      type="submit"
+                      disabled={updatingProfile}
                       className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#590d0d] px-8 py-3 text-sm font-bold tracking-widest text-white transition-opacity hover:opacity-90 disabled:opacity-50"
                     >
                       {updatingProfile ? "UPDATING..." : "SAVE PROFILE"}
@@ -858,16 +856,14 @@ export default function DashboardPage() {
                                 <span className="font-bold text-[#590d0d]">৳{(p.amount / 100).toLocaleString()}</span>
                               </td>
                               <td className="px-5 py-4">
-                                <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                                  p.status === "succeeded"
-                                    ? "bg-green-100 text-green-700"
-                                    : p.status === "processing"
+                                <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${p.status === "succeeded"
+                                  ? "bg-green-100 text-green-700"
+                                  : p.status === "processing"
                                     ? "bg-yellow-100 text-yellow-700"
                                     : "bg-red-100 text-red-700"
-                                }`}>
-                                  <span className={`h-1.5 w-1.5 rounded-full ${
-                                    p.status === "succeeded" ? "bg-green-500" : p.status === "processing" ? "bg-yellow-500" : "bg-red-500"
-                                  }`} />
+                                  }`}>
+                                  <span className={`h-1.5 w-1.5 rounded-full ${p.status === "succeeded" ? "bg-green-500" : p.status === "processing" ? "bg-yellow-500" : "bg-red-500"
+                                    }`} />
                                   {p.status.charAt(0).toUpperCase() + p.status.slice(1)}
                                 </span>
                               </td>

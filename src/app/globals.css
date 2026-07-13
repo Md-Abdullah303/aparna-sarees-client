@@ -210,3 +210,15 @@ body {
     @apply font-sans;
   }
 }
+
+/* ── Hide Stripe Link floating autofill badge ──────────────────── */
+[data-testid="stripe-badge"],
+.StripeElement--focus ~ [data-stripe-badge],
+iframe[name^="__privateStripeMetricsController"],
+iframe[src*="js.stripe.com/v3/link-authentication-element"],
+iframe[src*="js.stripe.com/v3/elements-inner-link-autofill-modal"],
+iframe[src*="js.stripe.com/v3/elements-inner-link-button"] {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}

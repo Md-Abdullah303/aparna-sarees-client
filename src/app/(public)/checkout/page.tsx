@@ -15,7 +15,7 @@ const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = "/api/server";
 
 // ─── Inner Checkout Form ───────────────────────────────────────
 function CheckoutForm({
@@ -65,6 +65,10 @@ function CheckoutForm({
         <PaymentElement
           options={{
             layout: "tabs",
+            wallets: {
+              applePay: "never",
+              googlePay: "never",
+            },
           }}
         />
       </div>
@@ -105,6 +109,7 @@ import { useSession } from "@/lib/auth-client";
 // ─── Checkout Page Wrapper ─────────────────────────────────────
 function CheckoutContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const sareeId = searchParams.get("sareeId");
   const [saree, setSaree] = useState<any>(null);
   const [clientSecret, setClientSecret] = useState("");
@@ -114,6 +119,15 @@ function CheckoutContent() {
 
   useEffect(() => {
     if (isPending) return; // wait for session to load
+
+    // ── Auth Guard ──────────────────────────────────────────────
+    if (!session) {
+      const redirectUrl = sareeId
+        ? `/checkout?sareeId=${sareeId}`
+        : "/checkout";
+      router.replace(`/login?redirect=${encodeURIComponent(redirectUrl)}`);
+      return;
+    }
     
     if (!sareeId) {
       setLoadError("No saree selected.");
@@ -122,14 +136,14 @@ function CheckoutContent() {
     }
 
     // Fetch saree details
-    fetch(`${API_URL}/api/sarees/${sareeId}`)
+    fetch(`${API}/api/sarees/${sareeId}`)
       .then((r) => r.json())
       .then(async (data) => {
         if (!data || !data.price) throw new Error("Saree not found");
         setSaree(data);
 
         // Create payment intent
-        const res = await fetch(`${API_URL}/api/stripe/create-payment-intent`, {
+        const res = await fetch(`${API}/api/stripe/create-payment-intent`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -149,7 +163,7 @@ function CheckoutContent() {
         setLoadError(err.message || "Something went wrong.");
         setStep("error");
       });
-  }, [sareeId]);
+  }, [sareeId, isPending, session]);
 
   if (step === "loading") {
     return (

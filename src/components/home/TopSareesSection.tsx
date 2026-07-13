@@ -50,7 +50,7 @@ export function TopSareesSection() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    const API = "/api/server";
     fetch(`${API}/api/sarees`)
       .then((res) => res.json())
       .then((data) => {

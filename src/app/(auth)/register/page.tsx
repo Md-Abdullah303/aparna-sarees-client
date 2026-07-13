@@ -56,7 +56,7 @@ export default function RegisterPage() {
         onSuccess: async () => {
           toast.success("Registration successful!");
           await authClient.signIn.email({ email, password });
-          router.push("/dashboard");
+          router.push("/");
         },
         onError: (ctx) => {
           setError(ctx.error.message || "Registration failed");
